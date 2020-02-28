@@ -142,7 +142,7 @@ class CPU:
     def mul(self, a=None, b=None):
         self.alu("MUL", a, b)
 
-    def push(self, a=None):
+    def push(self, a=None, b=None):
         self.registers[self.sp] -= 1
         val = self.registers[a]
         self.write_ram(self.registers[self.sp], val)
@@ -168,19 +168,16 @@ class CPU:
     def run(self):
         """Run The CPU"""
 
-        # used to break out of the running state
-        run = True
-
         # a dict to check for jump instructions
         jump = [CALL, JNE, RET, JMP, JEQ]
 
-        while run:
+        while True:
             IR = self.read_ram(self.pc)
             operand_a = self.read_ram(self.pc + 1)
             operand_b = self.read_ram(self.pc + 2)
             if IR == HLT:
                 print("Exiting program...")
-                run = False
+                sys.exit(1)
             elif IR in jump:
                 self.branch_table[IR](operand_a, operand_b)
             elif IR in self.branch_table:
