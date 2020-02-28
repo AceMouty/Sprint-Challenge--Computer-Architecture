@@ -106,7 +106,7 @@ class CPU:
         else:
             raise Exception("Unsupported ALU operation")
 
-    def ram_read(self, MAR):
+    def read_ram(self, MAR):
         return self.ram[MAR]
 
     def write_ram(self, MAR, MDR):
@@ -141,3 +141,26 @@ class CPU:
 
     def mul(self, a=None, b=None):
         self.alu("MUL", a, b)
+
+    def push(self, a=None):
+        self.registers[self.sp] -= 1
+        val = self.registers[a]
+        self.write_ram(self.registers[self.sp], val)
+
+    def pop(self, a=None):
+        val = self.read_ram(self.registers[self.sp])
+        self.registers[a] = val
+        self.registers[self.sp] += 1
+
+    def call(self):
+        val = self.pc + 2
+        self.registers[self.sp] -= 1
+        self.write_ram(self.registers[self.sp], val)
+        reg = self.read_ram(self.pc + 1)
+        addr = self.registers[reg]
+        self.pc = addr
+
+    def ret(self):
+        ret_addr = self.registers[self.sp]
+        self.pc = self.read_ram(ret_addr)
+        self.registers[self.sp] += 1
