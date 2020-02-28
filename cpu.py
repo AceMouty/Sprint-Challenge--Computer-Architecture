@@ -33,18 +33,18 @@ class CPU:
         self.flags = {}
         # Construct a branch table
         self.branch_table = {}
-        self.branch_table[ADD] = self.add
+        self.branch_table[JEQ] = self.jeq
+        self.branch_table[JMP] = self.jmp
+        self.branch_table[JNE] = self.jne
+        self.branch_table[CMP] = self.cmp_func
         self.branch_table[LDI] = self.ldi
         self.branch_table[PRN] = self.prn
+        self.branch_table[ADD] = self.add
         self.branch_table[MUL] = self.mul
         self.branch_table[PUSH] = self.push
         self.branch_table[POP] = self.pop
         self.branch_table[CALL] = self.call
         self.branch_table[RET] = self.ret
-        self.branch_table[JMP] = self.jmp
-        self.branch_table[JNE] = self.jne
-        self.branch_table[JEQ] = self.jeq
-        self.branch_table[CMP] = self.cmp_func
 
     def load(self, filename):
         """Load a program into memory."""
@@ -126,3 +126,18 @@ class CPU:
             self.pc = self.registers[a]
         else:
             self.pc += 2
+
+    def cmp_func(self, a=None, b=None):
+        self.alu("CMP", a, b)
+
+    def ldi(self, a=None, b=None):
+        self.registers[a] = b
+
+    def prn(self, a=None):
+        print(self.registers[a])
+
+    def add(self, a=None, b=None):
+        self.alu("ADD", a, b)
+
+    def mul(self, a=None, b=None):
+        self.alu("MUL", a, b)
