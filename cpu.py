@@ -11,7 +11,7 @@ CMP = 0b10100111
 JMP = 0b01010100
 JNE = 0b01010110
 JEQ = 0b01010101
-
+PRA = 0b01001000
 CALL = 0b01010000
 PUSH = 0b01000101
 
@@ -45,6 +45,7 @@ class CPU:
         self.branch_table[POP] = self.pop
         self.branch_table[CALL] = self.call
         self.branch_table[RET] = self.ret
+        self.branch_table[PRA] = self.pra
 
     def load(self, filename):
         """Load a program into memory."""
@@ -135,6 +136,9 @@ class CPU:
 
     def prn(self, a=None, b=None):
         print(self.registers[a])
+
+    def pra(self, a=None, b=None):
+        print(chr(self.registers[a]))
 
     def add(self, a=None, b=None):
         self.alu("ADD", a, b)
