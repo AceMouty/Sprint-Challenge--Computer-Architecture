@@ -1,5 +1,7 @@
 import sys
 
+XOR = 0b10101011
+AND = 0b10101000
 HLT = 0b00000001
 LDI = 0b10000010
 PRN = 0b01000111
@@ -37,6 +39,8 @@ class CPU:
         self.branch_table[JMP] = self.jmp
         self.branch_table[JNE] = self.jne
         self.branch_table[CMP] = self.cmp_func
+        self.branch_table[AND] = self.and_func
+        self.branch_table[XOR] = self.xor_func
         self.branch_table[LDI] = self.ldi
         self.branch_table[PRN] = self.prn
         self.branch_table[ADD] = self.add
@@ -91,6 +95,10 @@ class CPU:
             self.registers[reg_a] += self.registers[reg_b]
         elif op == "MUL":
             self.registers[reg_a] *= self.registers[reg_b]
+        elif op == "AND":
+            self.registers[reg_a] = self.registers[reg_a] and self.registers[reg_b]
+        elif op == "XOR":
+            self.registers[reg_a] = self.registers[reg_a] ^ self.registers[reg_b]
         elif op == "CMP":
             if a == b:
                 self.flags['E'] = 1
@@ -130,6 +138,12 @@ class CPU:
 
     def cmp_func(self, a=None, b=None):
         self.alu("CMP", a, b)
+
+    def and_func(self, a=None, b=None):
+        self.alu("AND", a, b)
+
+    def xor_func(self, a=None, b=None):
+        self.alu("XOR", a, b)
 
     def ldi(self, a=None, b=None):
         self.registers[a] = b
